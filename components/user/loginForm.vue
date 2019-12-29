@@ -7,7 +7,7 @@
 			<el-input placeholder="用户名/手机" v-model="form.username"></el-input>
 		</el-form-item>
 
-		<el-form-item class="form-item">
+		<el-form-item class="form-item" prop="password">
 			<el-input placeholder="密码" type="password" v-model="form.password"></el-input>
 		</el-form-item>
 
@@ -22,18 +22,18 @@
 <script>
 export default {
 	data() {
-        // rule: 定义校验规则（不是必须的）
-        // value: 表单输入框的值
-        // callback: 回调函数，可以接受错误的提示，如果验证通过callback就不用传递参数，callback必须要调用
+		// rule: 定义校验规则（不是必须的）
+		// value: 表单输入框的值
+		// callback: 回调函数，可以接受错误的提示，如果验证通过callback就不用传递参数，callback必须要调用
 		const validateUsername = (rule, value, callback) => {
-            const reg = /^1[3-9][0-9]{9}$/;
-            // 正则下面的test方法返回布尔值
-            if(reg.test(value)){
-                // 验证通过
-                callback();
-            }else{
-                callback("手机号码格式错误");
-            }
+			const reg = /^1[3-9][0-9]{9}$/;
+			// 正则下面的test方法返回布尔值
+			if (reg.test(value)) {
+				// 验证通过
+				callback();
+			} else {
+				callback("手机号码格式错误");
+			}
 		};
 
 		return {
@@ -44,13 +44,25 @@ export default {
 			},
 			// 表单规则
 			rules: {
-				username: [{ validator: validateUsername, trigger: "blur" }]
+				username: [{ validator: validateUsername, trigger: "blur" }],
+				password: [
+					{ required: true, message: "请输入密码", trigger: "blur" }
+				]
 			}
 		};
 	},
 	methods: {
 		// 提交登录
-		handleLoginSubmit() {}
+		handleLoginSubmit() {
+            // validate方法是elementui给el-form表单提供验证的函数
+            // valid代表验证是否通过
+			this.$refs["form"].validate(valid => {
+                if(!valid) return;
+                
+                // 登录接口提交
+                
+			});
+		}
 	}
 };
 </script>
