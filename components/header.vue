@@ -28,7 +28,8 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>个人中心</el-dropdown-item>
-                        <el-dropdown-item>退出</el-dropdown-item>
+                        <!-- 事件后面添加了.native相当于强制给组件最外层的标签添加上事件 -->
+                        <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
 
@@ -42,8 +43,11 @@
 </template>
 <script>
 export default {
-    mounted(){
-        
+    methods: {
+        handleLogout(){
+            // 清除用户userInfo的数据
+            this.$store.commit("user/setUserInfo", {});
+        }
     }
 }
 </script>
