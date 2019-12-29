@@ -59,19 +59,9 @@ export default {
             // valid代表验证是否通过
 			this.$refs["form"].validate(valid => {
                 if(!valid) return;
-                
-                // 登录接口提交
-                this.$axios({
-                    url: "/accounts/login",
-                    method: "POST",
-                    data: this.form
-                }).then(res => {
-                    // 登录成功后返回上一个页面
-                    // this.$router.back();
 
-                    // 调用user下的mutations的方法
-                    this.$store.commit("user/setUserInfo", res.data)
-                })
+                // 调用actions的登录方法
+                this.$store.dispatch("user/login", this.form)
 			});
 		}
 	}

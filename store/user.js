@@ -21,5 +21,27 @@ export const mutations = {
     }
 };
 
-// // 异步修改state的数据
-// export const actions = {}
+// 异步修改state的数据，存放公共的请求函数，并且该函数可能会修改state的数据（不一定要修改）
+export const actions = {
+    // 登录函数可能会复用，会多个地方调用到，刚好该函数请求完成后修改state中userInfo
+    login(store, data){
+        // 登录接口提交
+        this.$axios({
+            url: "/accounts/login",
+            method: "POST",
+            data
+        }).then(res => {
+            // 登录成功后返回上一个页面
+            this.$router.back();
+
+            // 调用user下的mutations的方法
+            store.commit("setUserInfo", res.data);
+        })
+    }
+}
+
+
+
+
+
+
