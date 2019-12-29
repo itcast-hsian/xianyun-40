@@ -20,13 +20,22 @@
 
             <!-- 登录/用户信息 -->
             <el-row type="flex" align="middle">
+                <el-dropdown v-if="$store.state.user.userInfo.token">
+                    <span class="el-dropdown-link">
+                        <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar" >
+                        {{$store.state.user.userInfo.user.nickname}}
+                        <i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>个人中心</el-dropdown-item>
+                        <el-dropdown-item>退出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+
                 <!-- 不存在用户信息展示登录注册链接 -->
-                <nuxt-link to="/user/login" class="account-link">
+                <nuxt-link to="/user/login" class="account-link" v-else>
                     登录 / 注册 
                 </nuxt-link>
-
-                <!-- 测试渲染 -->
-                {{$store.state.user.name}}
             </el-row>
         </el-row>
     </header>
@@ -34,7 +43,7 @@
 <script>
 export default {
     mounted(){
-        console.log(this.$store.state.user.name)
+        
     }
 }
 </script>
