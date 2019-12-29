@@ -54,13 +54,25 @@ export default {
 	methods: {
 		// 提交登录
 		handleLoginSubmit() {
+            // this.$emit("自定义事件名", data)
+            this.$store.commit("user/setName", "abc123456");
+
             // validate方法是elementui给el-form表单提供验证的函数
             // valid代表验证是否通过
 			this.$refs["form"].validate(valid => {
                 if(!valid) return;
                 
                 // 登录接口提交
-                
+                // this.$axios({
+                //     url: "/accounts/login",
+                //     method: "POST",
+                //     data: this.form
+                // }).then(res => {
+                //     // 登录成功后返回上一个页面
+                //     // this.$router.back();
+
+                //     // res.data.user
+                // })
 			});
 		}
 	}

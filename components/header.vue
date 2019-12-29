@@ -24,12 +24,18 @@
                 <nuxt-link to="/user/login" class="account-link">
                     登录 / 注册 
                 </nuxt-link>
+
+                <!-- 测试渲染 -->
+                {{$store.state.user.name}}
             </el-row>
         </el-row>
     </header>
 </template>
 <script>
 export default {
+    mounted(){
+        console.log(this.$store.state.user.name)
+    }
 }
 </script>
 <style scoped lang="less">
