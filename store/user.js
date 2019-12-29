@@ -25,17 +25,18 @@ export const mutations = {
 export const actions = {
     // 登录函数可能会复用，会多个地方调用到，刚好该函数请求完成后修改state中userInfo
     login(store, data){
-        // 登录接口提交
-        this.$axios({
+        // 登录接口提交, (必要要添加return)
+        return this.$axios({
             url: "/accounts/login",
             method: "POST",
             data
         }).then(res => {
             // 登录成功后返回上一个页面
             this.$router.back();
-
             // 调用user下的mutations的方法
             store.commit("setUserInfo", res.data);
+
+            return true;
         })
     }
 }

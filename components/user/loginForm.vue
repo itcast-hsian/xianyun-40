@@ -61,7 +61,12 @@ export default {
                 if(!valid) return;
 
                 // 调用actions的登录方法
-                this.$store.dispatch("user/login", this.form)
+                this.$store.dispatch("user/login", this.form).then(res => {
+                    if(res === true){
+                        this.$message.success("登录成功，返回上一个页面");
+                    }
+                })
+
 			});
 		}
 	}
