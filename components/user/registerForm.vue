@@ -96,7 +96,20 @@ export default {
 
 		// 注册
 		handleRegSubmit() {
-			console.log(this.form);
+
+            this.$refs.form.validate(valid => {
+                if(valid){  
+                    // props是this.form除了checkPassword以外的其他属性
+                    const {checkPassword,  ...props} = this.form;
+			        this.$store.dispatch("user/register", props).then(res => {
+                        if(res){
+                            this.$message.success("注册成功");
+                        }
+                    })
+                }
+            })
+
+            
 		}
 	}
 };
