@@ -41,9 +41,12 @@
                 <el-date-picker type="date" 
                 placeholder="请选择日期" 
                 style="width: 100%;"
-                @change="handleDate">
+                @change="handleDate"
+                v-model="form.departDate"
+                :picker-options="pickerOptions">
                 </el-date-picker>
             </el-form-item>
+
             <el-form-item label="">
                 <el-button style="width:100%;" 
                 type="primary" 
@@ -60,6 +63,10 @@
 </template>
 
 <script>
+
+// 导入时间插件
+import moment from "moment";
+
 export default {
     data(){
         return {
@@ -81,6 +88,12 @@ export default {
             departData: [],
             // 到达城市的下拉列表数据
             destData: [],
+            // 禁止今天以前的日期
+            pickerOptions: {
+                disabledDate(time) {
+                    return time.getTime() + 3600 * 1000 * 24 < Date.now();
+                },
+            }
         }
     },
     methods: {
@@ -175,7 +188,7 @@ export default {
 
         // 确认选择日期时触发
         handleDate(value){
-           
+           this.form.departDate = moment(value).format("YYYY-MM-DD") // 2019-12-31
         },
 
         // 触发和目标城市切换时触发
@@ -185,7 +198,11 @@ export default {
 
         // 提交表单是触发
         handleSubmit(){
-           console.log(this.form)
+           // 跳转到机票的列表页
+           this.$router.push({
+               path: "/air/flights",
+               query: this.form
+           });
         }
     },
     mounted() {
