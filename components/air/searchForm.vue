@@ -14,6 +14,7 @@
             <el-form-item label="出发城市">
 
                 <!-- fetch-suggestions: 输入建议时候会触发（监听输入框的输入类似input事件） -->
+                <!-- select: 选中下拉框时候触发的事件 -->
                 <el-autocomplete
                 :fetch-suggestions="queryDepartSearch"
                 placeholder="请搜索出发城市"
@@ -67,6 +68,7 @@ export default {
 
             form: {
                 departCity: "", // 出发城市
+                departCode: "", // 出发城市代码
             }
         }
     },
@@ -80,16 +82,29 @@ export default {
         // value是输入框的值
         // cb是回调函数, 调用时候展示下拉列表，注意参数必须是数组，数组中元素必须是对象，对象中必须包含value属性
         queryDepartSearch(value, callback){
+
+            if(value.trim() === ""){
+                callback([]);
+                return;
+            }
+
             // 根据输入框value值发起请求
+            this.$axios({
+                url: "/airs/city",
+                params: {
+                    name: value
+                }
+            }).then(res => {
+                const {data} = res.data;
 
-            // 假设广元 广州 广安
-            var arr = [
-                { value: "广州" },
-                { value: "广元" },
-                { value: "广安" }
-            ];
+                // 循环给data中每一项添加一个value属性，并且没有市字的
+                const newData = data.map(v => {
+                    v.value = v.name.replace("市", "")
+                    return v;
+                })
 
-            callback(arr);
+                callback(newData);
+            })
         },
 
         // 目标城市输入框获得焦点时触发
@@ -98,9 +113,10 @@ export default {
             
         },
        
-        // 出发城市下拉选择时触发
+        // 出发城市下拉选择时触发，item选中的对象
         handleDepartSelect(item) {
-            
+            // 获取当前选中的城市代码
+            this.form.departCode = item.sort;
         },
 
         // 目标城市下拉选择时触发
