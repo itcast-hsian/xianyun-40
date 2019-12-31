@@ -21,8 +21,8 @@
                 @select="handleDepartSelect"
                 class="el-autocomplete"
                 v-model="form.departCity"
+                @blur="handleDepartChange"
                 ></el-autocomplete>
-                
             </el-form-item>
 
             <el-form-item label="到达城市">
@@ -31,8 +31,11 @@
                 placeholder="请搜索到达城市"
                 @select="handleDestSelect"
                 class="el-autocomplete"
+                v-model="form.destCity"
+                @blur="handleDestChange"
                 ></el-autocomplete>
             </el-form-item>
+
             <el-form-item label="出发时间">
                 <!-- change 用户确认选择日期时触发 -->
                 <el-date-picker type="date" 
@@ -69,13 +72,37 @@ export default {
             form: {
                 departCity: "", // 出发城市
                 departCode: "", // 出发城市代码
-            }
+                destCity: "",   // 到达城市
+                destCode: "",   // 到达城市代码
+                departDate: ""  // 出发日期
+            },
+
+            // 出发城市的下拉列表数据
+            departData: [],
+            // 到达城市的下拉列表数据
+            destData: [],
         }
     },
     methods: {
         // tab切换时触发
         handleSearchTab(item, index){
             
+        },
+
+        // 出发城市输入框失去焦点时候默认选中第一个城市
+        handleDepartChange(){
+            if(this.departData.length > 0){
+                this.form.departCity = this.departData[0].value;
+                this.form.departCode = this.departData[0].sort;
+            }
+        },
+
+        // 到达城市输入框失去焦点时候默认选中第一个城市
+        handleDestChange(){
+            if(this.destData.length > 0){
+                this.form.destCity = this.destData[0].value;
+                this.form.destCode = this.destData[0].sort;
+            }
         },
         
         // 监听出发城市的输入时候触发的事件
@@ -98,19 +125,40 @@ export default {
                 const {data} = res.data;
 
                 // 循环给data中每一项添加一个value属性，并且没有市字的
-                const newData = data.map(v => {
+                this.departData = data.map(v => {
                     v.value = v.name.replace("市", "")
                     return v;
                 })
 
-                callback(newData);
+                callback(this.departData);
             })
         },
 
         // 目标城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
-        queryDestSearch(value, cb){
-            
+        queryDestSearch(value, callback){
+            if(value.trim() === ""){
+                callback([]);
+                return;
+            }
+
+            // 根据输入框value值发起请求
+            this.$axios({
+                url: "/airs/city",
+                params: {
+                    name: value
+                }
+            }).then(res => {
+                const {data} = res.data;
+
+                // 循环给data中每一项添加一个value属性，并且没有市字的
+                this.destData = data.map(v => {
+                    v.value = v.name.replace("市", "")
+                    return v;
+                })
+
+                callback(this.destData);
+            })
         },
        
         // 出发城市下拉选择时触发，item选中的对象
@@ -121,7 +169,8 @@ export default {
 
         // 目标城市下拉选择时触发
         handleDestSelect(item) {
-            
+            // 获取当前选中的城市代码
+            this.form.destCode = item.sort;
         },
 
         // 确认选择日期时触发
@@ -136,7 +185,7 @@ export default {
 
         // 提交表单是触发
         handleSubmit(){
-           
+           console.log(this.form)
         }
     },
     mounted() {
