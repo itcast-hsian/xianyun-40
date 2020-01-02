@@ -58,12 +58,25 @@ export default {
             // 总条数
             total: 0,
             // 存放切割出来数据
-            dataList: [] 
+            // dataList: [] 
         }
     },
     components: {
         FlightsListHead,
         FlightsItem
+    },
+
+    computed: {
+        // 计算属性监听函数内部引用实例的属性变化，一旦发生了变化，该函数会重新计算，并且返回新的值
+        dataList(){
+            // 请求如果还没完成，返回空数组
+            if(!this.flightsData.flights) return [];
+            // 计算分页的数据
+            return this.flightsData.flights.slice(
+                (this.pageIndex - 1) * this.pageSize, 
+                this.pageIndex * this.pageSize
+            );
+        }
     },
 
     mounted(){
@@ -74,9 +87,6 @@ export default {
         }).then(res => {
             this.flightsData = res.data;
 
-            // 切割出第一页数据
-            this.dataList = this.flightsData.flights.slice(0, 5);
-
             // 总条数
             this.total = this.flightsData.total;
         })
@@ -86,19 +96,10 @@ export default {
         // 切换分页条数时候触发
         handleSizeChange(value){
             this.pageSize = value;
-            this.dataList = this.flightsData.flights.slice(
-                (this.pageIndex - 1) * this.pageSize, 
-                this.pageIndex * this.pageSize
-            );
         },
         // 切换页数时候触发的事件
         handleCurrentChange(value){
             this.pageIndex = value;
-            // 分页的数据
-            this.dataList = this.flightsData.flights.slice(
-                (this.pageIndex - 1) * this.pageSize, 
-                this.pageIndex * this.pageSize
-            );
         }
     }
 }
