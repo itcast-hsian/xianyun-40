@@ -74,7 +74,7 @@ export default {
         }).then(res => {
             this.flightsData = res.data;
 
-            // 切割出第一页
+            // 切割出第一页数据
             this.dataList = this.flightsData.flights.slice(0, 5);
 
             // 总条数
@@ -84,9 +84,22 @@ export default {
 
     methods: {
         // 切换分页条数时候触发
-        handleSizeChange(value){},
+        handleSizeChange(value){
+            this.pageSize = value;
+            this.dataList = this.flightsData.flights.slice(
+                (this.pageIndex - 1) * this.pageSize, 
+                this.pageIndex * this.pageSize
+            );
+        },
         // 切换页数时候触发的事件
-        handleCurrentChange(value){}
+        handleCurrentChange(value){
+            this.pageIndex = value;
+            // 分页的数据
+            this.dataList = this.flightsData.flights.slice(
+                (this.pageIndex - 1) * this.pageSize, 
+                this.pageIndex * this.pageSize
+            );
+        }
     }
 }
 </script>
