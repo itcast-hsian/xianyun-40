@@ -106,12 +106,29 @@ export default {
     methods: {
         // 选择机场时候触发
         handleAirport(value){
-            console.log(value)
+            // 过滤后数组
+            const arr = this.data.flights.filter(v => {
+                return value === v.org_airport_name;
+            })
+            
+            // 触发父组件的修改dataList的函数
+            this.$emit("setDataList", arr)
         },
 
         // 选择出发时间时候触发
         handleFlightTimes(value){
-            console.log(value)
+            // 数组的解构
+            const [from, to] = value.split(",");
+
+            // 过滤后数组
+            const arr = this.data.flights.filter(v => {
+                // 判断出发时间是否在选中的时间段内
+                const start = +v.dep_time.split(":")[0]
+                return start >= +from && start < +to;
+            })
+            
+            // 触发父组件的修改dataList的函数
+            this.$emit("setDataList", arr)
         },
 
          // 选择航空公司时候触发
@@ -129,7 +146,13 @@ export default {
 
          // 选择机型时候触发
         handleAirSize(value){
-           
+           // 过滤后数组
+            const arr = this.data.flights.filter(v => {
+                return value === v.plane_size;
+            })
+            
+            // 触发父组件的修改dataList的函数
+            this.$emit("setDataList", arr)
         },
         
         // 撤销条件时候触发

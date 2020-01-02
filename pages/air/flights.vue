@@ -111,6 +111,8 @@ export default {
         setDataList(arr){
             // arr 就是过滤后的符合条件的数据
             this.flightsData.flights = arr;
+            // 修改总条数
+            this.total = arr.length;
         },
 
         // 切换分页条数时候触发
