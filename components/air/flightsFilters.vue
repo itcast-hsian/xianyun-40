@@ -116,7 +116,15 @@ export default {
 
          // 选择航空公司时候触发
         handleCompany(value){
+            // 修改父组件中flightsData中的flights
+
+            // 过滤后数组
+            const arr = this.data.flights.filter(v => {
+                return value === v.airline_name;
+            })
             
+            // 触发父组件的修改dataList的函数
+            this.$emit("setDataList", arr)
         },
 
          // 选择机型时候触发
