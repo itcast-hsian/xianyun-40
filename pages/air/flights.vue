@@ -5,9 +5,7 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-                <div>
-                    
-                </div>
+                <FlightsFilters :data="flightsData"/>
                 
                 <!-- 航班头部布局 -->
                 <FlightsListHead/>
@@ -45,12 +43,15 @@
 <script>
 import FlightsListHead from "@/components/air/flightsListHead.vue"
 import FlightsItem from "@/components/air/flightsItem.vue"
+import FlightsFilters from "@/components/air/flightsFilters.vue"
 
 export default {
     data(){
         return {
             // 航班总数据 { info, flights, total, options }
-            flightsData: {},
+            flightsData: {
+                info: {}
+            },
             // 当前的页面
             pageIndex: 1,
             // 当然的条数
@@ -63,7 +64,8 @@ export default {
     },
     components: {
         FlightsListHead,
-        FlightsItem
+        FlightsItem,
+        FlightsFilters
     },
 
     computed: {
@@ -71,6 +73,7 @@ export default {
         dataList(){
             // 请求如果还没完成，返回空数组
             if(!this.flightsData.flights) return [];
+
             // 计算分页的数据
             return this.flightsData.flights.slice(
                 (this.pageIndex - 1) * this.pageSize, 
