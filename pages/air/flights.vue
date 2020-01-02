@@ -5,7 +5,7 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-                <FlightsFilters :data="flightsData"
+                <FlightsFilters :data="cacheFlightsData"
                 @setDataList="setDataList"/>
                 
                 <!-- 航班头部布局 -->
@@ -54,6 +54,12 @@ export default {
                 info: {},
                 options: {}
             },
+            // 缓存的变量，当该变量一旦被赋值之后不会被修改
+            cacheFlightsData: {
+                info: {},
+                options: {}
+            },
+
             // 当前的页面
             pageIndex: 1,
             // 当然的条数
@@ -90,7 +96,10 @@ export default {
             url: "/airs",
             params: this.$route.query
         }).then(res => {
+            // 赋值给总数据，但是该变量中的flights在过滤时候会被修改
             this.flightsData = res.data;
+            // 这个是缓存的变量，一旦赋值之后不能被改
+            this.cacheFlightsData = {...res.data};
 
             // 总条数
             this.total = this.flightsData.total;
