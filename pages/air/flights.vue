@@ -50,7 +50,8 @@ export default {
         return {
             // 航班总数据 { info, flights, total, options }
             flightsData: {
-                info: {}
+                info: {},
+                options: {}
             },
             // 当前的页面
             pageIndex: 1,
