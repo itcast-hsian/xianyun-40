@@ -58,14 +58,7 @@
 <script>
 export default {
 
-    props: {
-        // 数据
-        data: {
-            type: Object,
-            // 默认是空数组
-            default: {}
-        }
-    }
+    
 }
 </script>
 
