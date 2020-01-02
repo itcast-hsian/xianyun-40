@@ -14,7 +14,7 @@
                 
                 
                 <!-- 航班信息 -->
-                <FlightsItem v-for="(item, index) in flightsData.flights"
+                <FlightsItem v-for="(item, index) in dataList"
                 :key="index"
                 :data="item"/>
 
@@ -56,7 +56,9 @@ export default {
             // 当然的条数
             pageSize: 5,
             // 总条数
-            total: 0
+            total: 0,
+            // 存放切割出来数据
+            dataList: [] 
         }
     },
     components: {
@@ -71,13 +73,19 @@ export default {
             params: this.$route.query
         }).then(res => {
             this.flightsData = res.data;
+
+            // 切割出第一页
+            this.dataList = this.flightsData.flights.slice(0, 5);
+
+            // 总条数
+            this.total = this.flightsData.total;
         })
     },
 
     methods: {
         // 切换分页条数时候触发
         handleSizeChange(value){},
-        // 切换你页数时候触发的事件
+        // 切换页数时候触发的事件
         handleCurrentChange(value){}
     }
 }
