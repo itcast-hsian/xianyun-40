@@ -41,9 +41,11 @@
             <h2>保险</h2>
             <div>
                 <!-- 循环渲染保险的数据 -->
-                <div class="insurance-item">
+                <div class="insurance-item" 
+                v-for="(item, index) in data.insurances"
+                :key="index">
                     <el-checkbox 
-                    label="航空意外险：￥30/份×1  最高赔付260万" 
+                    :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" 
                     border>
                     </el-checkbox> 
                 </div>
@@ -92,6 +94,14 @@ export default {
             invoice: false,
             seat_xid: "", // 座位的id
             air: ""       // 航班的id
+        }
+    },
+
+    props: {
+        // 组件接受父组件传递的机票的数据信息
+        data: {
+            type: Object,
+            default(){return {}}
         }
     },
 

@@ -2,7 +2,7 @@
     <div class="container">
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
-            <OrderForm/>
+            <OrderForm :data="infoData"/>
 
             <!-- 侧边栏 -->
             <div class="aside">
@@ -15,8 +15,28 @@
 <script>
 import OrderForm from "@/components/air/orderForm.vue";
 export default {
+    data(){
+        return {
+            // 当前选中的机票的信息
+            infoData: {}
+        }
+    },
     components: {
         OrderForm
+    },
+
+    mounted(){
+        // id是动态参数
+        const {id, seat_xid} = this.$route.query;
+
+        this.$axios({
+            url: "/airs/" + id,
+            params: {
+                seat_xid
+            }
+        }).then(res => {
+            this.infoData = res.data;
+        })
     }
 }
 </script>
