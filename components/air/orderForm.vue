@@ -146,12 +146,34 @@ export default {
             this.$store.dispatch("user/sendCaptcha", this.contactPhone).then(res => {
                 this.$message.success("手机验证码发送成功：000000")
             })
-
         },
 
         // 提交订单
         handleSubmit(){
-            console.log(this.insurances)
+            // 提交给创建订单接口的参数
+            const data = {
+                users: this.users,
+                insurances: this.insurances, // 保险id
+                contactName: this.contactName,
+                contactPhone: this.contactPhone,
+                captcha: this.captcha,
+                invoice: false,
+                seat_xid: this.$route.query.seat_xid, // 座位的id
+                air: this.$route.query.id       // 航班的id
+            }
+
+            // 创建订单接口
+            this.$axios({
+                url: "/airorders",
+                method: 'POST',
+                headers: {
+                    // Bearer是token字符串前面必须要声明的，后面加上空格，再连接上token
+                    Authorization: "Bearer " + this.$store.state.user.userInfo.token
+                },
+                data
+            }).then(res => {
+                console.log(res)
+            })
         }
     }
 }
