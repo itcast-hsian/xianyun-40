@@ -46,7 +46,8 @@
                 :key="index">
                     <el-checkbox 
                     :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" 
-                    border>
+                    border
+                    @change="handleInsurances(item.id)">
                     </el-checkbox> 
                 </div>
             </div>
@@ -118,6 +119,20 @@ export default {
         handleDeleteUser(index){
             this.users.splice(index, 1);
         },
+
+        // 处理保险id
+        handleInsurances(id){
+            // 判断数组中有没有该id
+            const index = this.insurances.indexOf(id);
+
+            // 有的话删除掉该id
+            if(index > -1){
+                this.insurances.splice(index, 1);
+            }else{
+                // 没有的话添加
+                this.insurances.push(id)
+            }            
+        },
         
         // 发送手机验证码
         handleSendCaptcha(){
@@ -126,7 +141,7 @@ export default {
 
         // 提交订单
         handleSubmit(){
-            console.log(this.users)
+            console.log(this.insurances)
         }
     }
 }
