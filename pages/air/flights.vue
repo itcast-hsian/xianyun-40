@@ -52,12 +52,14 @@ export default {
             // 航班总数据 { info, flights, total, options }
             flightsData: {
                 info: {},
-                options: {}
+                options: {},
+                flights: []
             },
             // 缓存的变量，当该变量一旦被赋值之后不会被修改
             cacheFlightsData: {
                 info: {},
-                options: {}
+                options: {},
+                flights: []
             },
 
             // 当前的页面
