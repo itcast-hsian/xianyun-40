@@ -48,7 +48,8 @@
                             <!-- 跳转到确认的订单页面 -->
                             <el-button 
                             type="warning" 
-                            size="mini">
+                            size="mini"
+                            @click="handleLinkOrder(data.id, item.seat_xid)">
                             选定
                             </el-button>
                             <p>剩余：{{item.discount}}</p>
@@ -104,7 +105,20 @@ export default {
             // 如果组件没有传递data属性会取这个默认值
             default(){ return {} }
         }
-    }  
+    },
+
+    methods: {
+        // 跳转到确认页
+        handleLinkOrder(id, seat_xid){
+            this.$router.push({
+                path: "/air/order",
+                query: {
+                    id,
+                    seat_xid
+                }
+            })
+        }
+    }
 }
 </script>
 

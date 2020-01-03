@@ -195,7 +195,10 @@ export default {
         
         // 撤销条件时候触发
         handleFiltersCancel(){
-            
+            this.airport = "";        
+            this.flightTimes = "";    
+            this.company =  "";      
+            this.airSize = "";   
         },
     }
 }
