@@ -46,6 +46,7 @@ export const actions = {
             url: "/captchas",
             method: 'POST',
             data: {
+                // 手机号码
                 tel: data
             }
         })
