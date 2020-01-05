@@ -57,8 +57,33 @@ export default {
     },
 
     computed: {
+        // 相隔时间
         rankTime(){
-            return `123`
+            if(!this.data.arr_time) return;
+
+            // 到达时间
+            const arr = this.data.arr_time;
+            const dep = this.data.dep_time;
+
+            const end = arr.split(":"); // ['12', '30']
+            const start = dep.split(":"); // ['10', '00']
+
+            let end_min = (end[0] * 60 + +end[1]);
+            const start_min = (start[0] * 60 + +start[1]);
+
+            // 如果小于认为是到第二天
+            if(end_min < start_min){
+                end_min += 24 * 60;
+            }
+            
+            // 相隔分钟
+            const dis = end_min - start_min;
+            // 小时
+            const hours = Math.floor(dis / 60);
+            // 分钟
+            const min = dis % 60;
+
+            return `${hours}时${min}分`;
         }
     },
 }
