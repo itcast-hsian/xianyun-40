@@ -1,7 +1,7 @@
 <template>
   <div style="padding:100px;">
     <!-- 引入高德地图的js -->
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=	819d9ea7b3f50ec473041569fcfc6a23&plugin=AMap.Driving"></script> 
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=	819d9ea7b3f50ec473041569fcfc6a23&plugin=AMap.Driving,AMap.Transfer,AMap.Walking,AMap.Autocomplete"></script> 
 
     <!-- 地图的容器 -->
     <el-row>
@@ -23,19 +23,31 @@
                 </el-form-item>
             
                 <el-form-item>
-                    <el-input placeholder="起点位置" v-model="start"></el-input>
+                    <el-autocomplete 
+                    placeholder="起点位置" 
+                    v-model="start"
+                    :fetch-suggestions="handleKeyword"
+                    ></el-autocomplete>
                 </el-form-item>
                 <el-form-item>
-                    <el-input placeholder="终点位置" v-model="end"></el-input>
+                    <el-autocomplete 
+                    placeholder="起点位置" 
+                    v-model="end"
+                    :fetch-suggestions="handleKeyword"
+                    ></el-autocomplete>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="handleSearch">搜索</el-button>
                 </el-form-item>
-                <el-form-item v-if="routes[0]">
+                <el-form-item v-if="routes[0] && current === 0">
                     <div>距离：{{ Number(routes[0].distance / 1000).toFixed(1) }}公里</div>
                     <div>时间：{{ routes[0].time }}</div>
                     <div>高速费：{{ routes[0].tolls }}元</div>
                     <div>高速的距离：{{ Number(routes[0].tolls_distance / 1000).toFixed(1) }}公里</div>
+                </el-form-item>
+                <el-form-item v-if="routes[0] && current === 2">
+                    <div>距离：{{ Number(routes[0].distance / 1000).toFixed(1) }}公里</div>
+                    <div>时间：{{ routes[0].time }}</div>
                 </el-form-item>
             </el-form>
             
@@ -48,7 +60,7 @@
 export default {
     data(){
         return {
-            current: 0,
+            current: 1,
 
             // 起点的关键字
             start: "",
@@ -56,6 +68,10 @@ export default {
             end: "",
             // 驾车对象
             driving: "",
+            // 公交对象
+            transfer: "",
+            // 步行对象
+            walking: "",
             // 当前搜索的路线的信息
             routes: []
         }
@@ -66,37 +82,102 @@ export default {
             this.current = index;
         },
 
+        // 起点位置的下拉列表
+        handleKeyword(value, callback){
+            if(!value){
+                callback([]);
+                return;
+            }
+
+            var autoComplete= new AMap.Autocomplete({ city: '全国' });
+            autoComplete.search(value, function(status, result) {
+                // 搜索成功时，result即是对应的匹配数据
+                const data = result.tips.map(v => {
+                    v.value = v.name;
+                    return v;
+                })
+
+                // 回调函数的参数必须是一个数组，数组的元素必须是一个对象，对象里面必须有value属性
+                callback(data)
+            })
+        },
+
         // 根据搜索关键字路线的规划
         handleSearch(){
             var points = [
                 { keyword: this.start, city:'全国' },
                 { keyword: this.end, city:'全国' }
             ]
+
+            console.log(points)
             
-            this.driving.search(points, (status, result) => {
-                if(status === "complete"){
-                    this.routes = result.routes;
+            // 驾车
+            if(this.current == 0){
+                this.driving.search(points, (status, result) => {
+                    if(status === "complete"){
+                        this.routes = result.routes;
 
-                    // 得到分钟
-                    const time = this.routes[0].time / 60;
-                    let hours, min, day;
-                    if(time >= 60){
-                        hours = Math.floor(time / 60);
-                        min = time % 60;
-                        this.routes[0].time = `${hours}小时${Number(min).toFixed(2)}分钟`
-                    }
-                    
-                    if(hours >= 24){
-                        day = Math.floor(hours / 24);
-                        hours = hours % 24;
-                        this.routes[0].time = `${day}天${hours}小时${Number(min).toFixed(2)}分钟`
-                    }
+                        // 得到分钟
+                        const time = this.routes[0].time / 60;
+                        let hours, min, day;
+                        if(time >= 60){
+                            hours = Math.floor(time / 60);
+                            min = time % 60;
+                            this.routes[0].time = `${hours}小时${Number(min).toFixed(2)}分钟`
+                        }
+                        
+                        if(hours >= 24){
+                            day = Math.floor(hours / 24);
+                            hours = hours % 24;
+                            this.routes[0].time = `${day}天${hours}小时${Number(min).toFixed(2)}分钟`
+                        }
 
-                    if(time < 60){
-                        this.routes[0].time = `${Number(time).toFixed(2)}分钟`
+                        if(time < 60){
+                            this.routes[0].time = `${Number(time).toFixed(2)}分钟`
+                        }
                     }
-                }
-            })
+                })
+            }
+
+            // 公交
+            if(this.current == 1){
+                this.transfer.search(points, (status, result) => {
+                    if(status === "complete"){
+                        // 根绝result的结果循环公交的推荐路线
+                        console.log(result)
+                    }
+                })
+            }
+
+            // 步行
+            if(this.current == 2){
+                this.walking.search(points, (status, result) => {
+                    if(status === "complete"){
+                        // 根绝result的结果循环公交的推荐路线
+                        // 根绝result的结果循环公交的推荐路线
+                        this.routes = result.routes;
+
+                        // 得到分钟
+                        const time = this.routes[0].time / 60;
+                        let hours, min, day;
+                        if(time >= 60){
+                            hours = Math.floor(time / 60);
+                            min = time % 60;
+                            this.routes[0].time = `${hours}小时${Number(min).toFixed(2)}分钟`
+                        }
+                        
+                        if(hours >= 24){
+                            day = Math.floor(hours / 24);
+                            hours = hours % 24;
+                            this.routes[0].time = `${day}天${hours}小时${Number(min).toFixed(2)}分钟`
+                        }
+
+                        if(time < 60){
+                            this.routes[0].time = `${Number(time).toFixed(2)}分钟`
+                        }
+                    }
+                })
+            }
         }
     },
     mounted(){
@@ -136,14 +217,23 @@ export default {
         // })
 
 
-        // 路线搜索
+        // 开车路线搜索
         this.driving = new AMap.Driving({
             map,
             // 驾车路线规划策略，AMap.DrivingPolicy.LEAST_TIME是最快捷模式
             policy: AMap.DrivingPolicy.LEAST_TIME
         })
-        
-        
+        // 公交
+        this.transfer = new AMap.Transfer({
+            map,
+            // 驾车路线规划策略，AMap.DrivingPolicy.LEAST_TIME是最快捷模式
+            policy: AMap.TransferPolicy.LEAST_TIME
+        })
+
+        // 步行
+        this.walking = new AMap.Walking({
+            map,
+        })
         
     }
 }
