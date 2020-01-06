@@ -4,12 +4,52 @@
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=	819d9ea7b3f50ec473041569fcfc6a23&plugin=AMap.Driving"></script> 
 
     <!-- 地图的容器 -->
-    <div id="container"></div> 
+    <el-row>
+        <el-col :span="12">
+            <div id="container"></div> 
+        </el-col>
+        <el-col :span="8" :offset="4">
+            <el-form>
+                <el-form-item>
+                    <el-row type="flex" justify="space-between">
+                        <span v-for="(item, index) in ['驾车','公交','步行','骑行']"
+                        :key="index"
+                        class="tabSpan"
+                        @click="handleChangeTab(index)"
+                        :class="{active: current === index}">
+                        {{item}}
+                        </span>
+                    </el-row>
+                </el-form-item>
+            
+                <el-form-item>
+                    <el-input placeholder="起点位置"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-input placeholder="终点位置"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button>搜索</el-button>
+                </el-form-item>
+            </el-form>
+            
+        </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
+    data(){
+        return {
+            current: 0
+        }
+    },
+    methods: {
+        handleChangeTab(index){
+            this.current = index;
+        }
+    },
     mounted(){
         var map = new AMap.Map('container', {
             zoom:11,//级别
@@ -52,4 +92,13 @@ export default {
 
 <style scoped lang="less">
 #container {width:500px; height: 500px; }  
+
+.tabSpan{
+    cursor: pointer;
+}
+
+.active{
+    color:red;
+    text-decoration: underline;
+}
 </style>
